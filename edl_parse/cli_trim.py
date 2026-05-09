@@ -42,6 +42,24 @@ def build_trim_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _write_output(json_output: str, output_path: str | None) -> None:
+    """Write JSON output to a file or stdout.
+
+    Args:
+        json_output: The JSON string to write.
+        output_path: Destination file path, or None to write to stdout.
+    """
+    if output_path:
+        try:
+            with open(output_path, "w") as fh:
+                fh.write(json_output)
+        except OSError as exc:
+            print(f"Error: could not write to {output_path}: {exc}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        print(json_output)
+
+
 def cmd_trim(args: argparse.Namespace) -> None:
     """Execute the trim command."""
     try:
@@ -60,12 +78,7 @@ def cmd_trim(args: argparse.Namespace) -> None:
         sys.exit(1)
 
     json_output = edl_to_json(trimmed)
-
-    if args.output:
-        with open(args.output, "w") as fh:
-            fh.write(json_output)
-    else:
-        print(json_output)
+    _write_output(json_output, args.output)
 
 
 def main() -> None:
