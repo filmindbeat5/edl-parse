@@ -60,15 +60,31 @@ def _write_output(json_output: str, output_path: str | None) -> None:
         print(json_output)
 
 
-def cmd_trim(args: argparse.Namespace) -> None:
-    """Execute the trim command."""
+def _read_input(input_path: str) -> str:
+    """Read raw EDL content from a file.
+
+    Args:
+        input_path: Path to the EDL file to read.
+
+    Returns:
+        The raw file contents as a string.
+
+    Exits with code 1 if the file is not found or cannot be read.
+    """
     try:
-        with open(args.input, "r") as fh:
-            raw = fh.read()
+        with open(input_path, "r") as fh:
+            return fh.read()
     except FileNotFoundError:
-        print(f"Error: file not found: {args.input}", file=sys.stderr)
+        print(f"Error: file not found: {input_path}", file=sys.stderr)
+        sys.exit(1)
+    except OSError as exc:
+        print(f"Error: could not read {input_path}: {exc}", file=sys.stderr)
         sys.exit(1)
 
+
+def cmd_trim(args: argparse.Namespace) -> None:
+    """Execute the trim command."""
+    raw = _read_input(args.input)
     edl = parse_edl(raw)
 
     try:
