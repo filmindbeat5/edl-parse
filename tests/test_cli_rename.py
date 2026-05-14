@@ -46,6 +46,18 @@ def test_parse_map_invalid_raises():
         _parse_map(["INVALID"])
 
 
+def test_parse_map_empty_returns_empty_dict():
+    """An empty list of mappings should return an empty dict without error."""
+    result = _parse_map([])
+    assert result == {}
+
+
+def test_parse_map_multiple_equals_uses_first_split():
+    """Values that contain '=' should be preserved correctly."""
+    result = _parse_map(["CAM_A=REEL=001"])
+    assert result == {"CAM_A": "REEL=001"}
+
+
 def test_cmd_rename_map_stdout(edl_file, capsys):
     args = Namespace(input=edl_file, output=None, map=["CAM_A=REEL_001", "CAM_B=REEL_002"], prefix=None)
     cmd_rename(args)
