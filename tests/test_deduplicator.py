@@ -43,6 +43,11 @@ def test_find_duplicates_no_duplicates():
     assert find_duplicates([e1, e2]) == []
 
 
+def test_find_duplicates_empty_list():
+    """find_duplicates should return an empty list when given no events."""
+    assert find_duplicates([]) == []
+
+
 def test_remove_duplicates_keep_first(events):
     result = remove_duplicates(events, keep="first")
     assert len(result) == 3
@@ -67,6 +72,11 @@ def test_remove_duplicates_preserves_order(events):
     result = remove_duplicates(events, keep="first")
     numbers = [e.event_number for e in result]
     assert numbers == sorted(numbers)
+
+
+def test_remove_duplicates_empty_list():
+    """remove_duplicates should return an empty list when given no events."""
+    assert remove_duplicates([], keep="first") == []
 
 
 def test_deduplicate_edl_returns_edl(events):
