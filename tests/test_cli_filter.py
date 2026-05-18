@@ -86,3 +86,13 @@ def test_cmd_filter_missing_file(tmp_path):
     with pytest.raises(SystemExit) as exc_info:
         cmd_filter(args)
     assert exc_info.value.code == 1
+
+
+def test_cmd_filter_no_matching_events(edl_file, capsys):
+    """Filtering by a reel that does not exist should return an empty events list."""
+    parser = build_filter_parser()
+    args = parser.parse_args([edl_file, "--reel", "REEL_NONEXISTENT"])
+    cmd_filter(args)
+    captured = capsys.readouterr()
+    data = json.loads(captured.out)
+    assert data["events"] == []
